@@ -1,0 +1,65 @@
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pytype/
+.pyre/
+
+# ===== Virtualenv =====
+.venv/
+venv/
+ENV/
+env/
+pip-wheel-metadata/
+
+# ===== Build / dist =====
+build/
+dist/
+*.egg-info/
+.eggs/
+wheelhouse/
+
+# ===== Coverage =====
+.coverage
+coverage.xml
+htmlcov/
+
+# ===== Jupyter =====
+.ipynb_checkpoints/
+
+# ===== Environment / secrets =====
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+
+# ===== Logs =====
+*.log
+logs/
+*.sqlite3
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+
+# ===== IDEs =====
+# PyCharm
+.idea/
+# VSCode
+.vscode/
+# Rider/IntelliJ
+*.iml
+
+# ===== Docker =====
+# (normalmente você versiona Dockerfile e docker-compose, mas ignora overrides locais)
+docker-compose.override.yml
+
+# ===== FastAPI / Uvicorn =====
+uvicorn.err
+uvicorn.out
