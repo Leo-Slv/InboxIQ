@@ -17,6 +17,10 @@ CMD ["sh", "-c", "gunicorn app.main:app \
   -k uvicorn.workers.UvicornWorker \
   -w ${WEB_CONCURRENCY:-2} \
   -b 0.0.0.0:${PORT} \
+  --timeout ${GUNICORN_TIMEOUT:-180} \
+  --graceful-timeout ${GUNICORN_GRACEFUL_TIMEOUT:-30} \
+  --max-requests ${GUNICORN_MAX_REQUESTS:-200} \
+  --max-requests-jitter ${GUNICORN_MAX_REQUESTS_JITTER:-50} \
   --access-logfile - \
   --error-logfile - \
   --log-level ${LOG_LEVEL:-info} \

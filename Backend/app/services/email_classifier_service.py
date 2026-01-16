@@ -27,6 +27,11 @@ class EmailClassifierService:
                 nlp_out.keywords,
             )
         except Exception:
+            # loga a exceção pra você enxergar no container/CloudWatch
+            logger.exception(
+                "ai_provider_failed_using_fallback",
+                extra={"event": "ai_provider_failed_using_fallback"},
+            )
             category, reply, confidence = self._fallback.classify_and_reply(nlp_out)
 
         safe = self._guard.ensure(category, reply, confidence)

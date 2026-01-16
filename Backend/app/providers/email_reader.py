@@ -3,6 +3,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 from io import BytesIO
+from pathlib import Path
 from typing import Optional
 
 from pypdf import PdfReader
@@ -20,10 +21,24 @@ class EmailReader:
         # mantém simples, mas normaliza quebras e espaços comuns
         return EmailContent(text=self._normalize(text or ""), source="text")
 
+    # ---------------------------
+    # TXT
+    # ---------------------------
     def from_txt_bytes(self, data: bytes, filename: str | None = None) -> EmailContent:
         text = self._decode_text_bytes(data)
         return EmailContent(text=self._normalize(text), source="txt", filename=filename)
 
+    def from_txt_path(self, path: str, filename: str | None = None) -> EmailContent:
+        """
+        Lê TXT por caminho (evita manter bytes duplicados em RAM).
+        """
+        p = Path(path)
+        data = p.read_bytes()
+        return self.from_txt_bytes(data, filename=filename)
+
+    # ---------------------------
+    # PDF
+    # ---------------------------
     def from_pdf_bytes(self, data: bytes, filename: str | None = None) -> EmailContent:
         reader = PdfReader(BytesIO(data))
         parts: list[str] = []
@@ -37,6 +52,24 @@ class EmailReader:
         text = "\n\n".join(parts)
         return EmailContent(text=self._normalize(text), source="pdf", filename=filename)
 
+    def from_pdf_path(self, path: str, filename: str | None = None) -> EmailContent:
+        """
+        Lê PDF por caminho (melhor para memória em produção).
+        """
+        reader = PdfReader(path)
+        parts: list[str] = []
+
+        for page in reader.pages:
+            extracted = (page.extract_text() or "").strip()
+            if extracted:
+                parts.append(extracted)
+
+        text = "\n\n".join(parts)
+        return EmailContent(text=self._normalize(text), source="pdf", filename=filename)
+
+    # ---------------------------
+    # Helpers
+    # ---------------------------
     def _decode_text_bytes(self, data: bytes) -> str:
         """
         Decodifica bytes de txt com fallback comum em PT-BR.
