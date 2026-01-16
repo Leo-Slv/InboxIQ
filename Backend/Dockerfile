@@ -13,4 +13,11 @@ COPY . .
 # muitas plataformas expõem PORT; padrão 8000
 ENV PORT=8000
 
-CMD ["sh", "-c", "gunicorn -k uvicorn.workers.UvicornWorker -w ${WEB_CONCURRENCY:-2} -b 0.0.0.0:${PORT} app.main:app"]
+CMD ["sh", "-c", "gunicorn app.main:app \
+  -k uvicorn.workers.UvicornWorker \
+  -w ${WEB_CONCURRENCY:-2} \
+  -b 0.0.0.0:${PORT} \
+  --access-logfile - \
+  --error-logfile - \
+  --log-level ${LOG_LEVEL:-info} \
+  --capture-output"]
