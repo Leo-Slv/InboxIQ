@@ -333,7 +333,7 @@ const Features: React.FC = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <div className="max-w-(--breakpoint-lg) w-full py-12 px-6">
+      <div className="max-w-(--breakpoint-lg) w-full py-12 px-6" id="features">
         <h2 className="text-4xl md:text-5xl md:leading-14 font-semibold tracking-[-0.03em] max-w-lg">
           Automatize sua Caixa de Entrada com Recursos Inteligentes
         </h2>

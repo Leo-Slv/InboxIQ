@@ -18,13 +18,14 @@ export const NavMenu = (props: ComponentProps<typeof NavigationMenu>) => (
   <NavigationMenu {...props}>
     <NavigationMenuList className="gap-1 space-x-0 text-sm">
       <NavigationMenuItem>
-        <Button variant="ghost" asChild>
-          <Link href="#">Home</Link>
-        </Button>
-      </NavigationMenuItem>
-      <NavigationMenuItem>
-        <Button variant="ghost" asChild>
-          <Link href="#">Features</Link>
+        <Button variant="ghost" asChild
+          onClick={() => {
+            document
+              .getElementById("features")
+              ?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }}
+        >
+          <div>Features</div>
         </Button>
       </NavigationMenuItem>
       <NavigationMenuItem>
