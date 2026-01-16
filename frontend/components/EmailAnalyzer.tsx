@@ -139,7 +139,7 @@ const EmailAnalyzer: React.FC = () => {
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-4xl space-y-8">
         {/* Header */}
-        <div className="text-center space-y-3">
+        <div className="text-center space-y-3" id="get-started">
           <div className="flex items-center justify-center gap-3">
             <Mail className="w-8 h-8 text-primary" />
             <h1 className="text-3xl font-semibold tracking-tight">InboxIQ</h1>

@@ -24,12 +24,12 @@ export const NavMenu = (props: ComponentProps<typeof NavigationMenu>) => (
       </NavigationMenuItem>
       <NavigationMenuItem>
         <Button variant="ghost" asChild>
-          <Link href="#">Home</Link>
+          <Link href="#">Features</Link>
         </Button>
       </NavigationMenuItem>
       <NavigationMenuItem>
         <Button variant="ghost" asChild>
-          <Link href="#">Home</Link>
+          <Link href="#">Analyzer</Link>
         </Button>
       </NavigationMenuItem>
     </NavigationMenuList>
