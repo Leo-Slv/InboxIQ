@@ -28,8 +28,14 @@ export const NavMenu = (props: ComponentProps<typeof NavigationMenu>) => (
         </Button>
       </NavigationMenuItem>
       <NavigationMenuItem>
-        <Button variant="ghost" asChild>
-          <Link href="#">Analyzer</Link>
+        <Button variant="ghost" asChild
+          onClick={() => {
+            document
+              .getElementById("get-started")
+              ?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }}
+        >
+          <div>Analyzer</div>
         </Button>
       </NavigationMenuItem>
     </NavigationMenuList>

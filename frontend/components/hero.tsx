@@ -1,3 +1,4 @@
+'use client'
 import AnimatedGridPattern from "@/components/ui/animated-grid-pattern";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -33,7 +34,13 @@ export default function Hero() {
           sugeridas instantaneamente com confiança empresarial.
         </p>
         <div className="mt-12 flex items-center justify-center gap-4">
-          <Button size="lg" className="rounded-full text-base">
+          <Button size="lg" className="rounded-full text-base"
+            onClick={() => {
+              document
+                .getElementById("get-started")
+                ?.scrollIntoView({ behavior: "smooth", block: "start" });
+            }}
+          >
             <CirclePlay className="h-5! w-5!" /> Watch Demo
           </Button>
         </div>
