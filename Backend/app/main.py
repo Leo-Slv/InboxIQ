@@ -8,7 +8,15 @@ from app.core.logging import configure_logging
 from app.api.routes.health import router as health_router
 from app.api.routes.email import router as email_router
 from app.middlewares.correlation_id_middleware import CorrelationIdMiddleware
-from app.middlewares.exception_middleware import ExternalAiExceptionMiddleware
+from app.middlewares.externalAiExceptionMiddleware import ExternalAiExceptionMiddleware
+from fastapi import HTTPException
+from fastapi.exceptions import RequestValidationError
+
+from app.core.exception_handlers import (
+    http_exception_handler,
+    validation_exception_handler,
+    unhandled_exception_handler,
+)
 
 openapi_tags = [
     {"name": "Health", "description": "Endpoints de verificação de saúde e disponibilidade."},
@@ -52,6 +60,9 @@ def create_app() -> FastAPI:
 
     # 1) exceções primeiro
     app.add_middleware(ExternalAiExceptionMiddleware)
+    app.add_exception_handler(HTTPException, http_exception_handler)
+    app.add_exception_handler(RequestValidationError, validation_exception_handler)
+    app.add_exception_handler(Exception, unhandled_exception_handler)
     # 2) correlation por último (tende a ficar “mais externo”)
     app.add_middleware(CorrelationIdMiddleware)
 
