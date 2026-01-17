@@ -13,6 +13,8 @@ COPY . .
 # muitas plataformas expõem PORT; padrão 8000
 ENV PORT=8000
 
+EXPOSE 8000
+
 CMD ["sh", "-c", "gunicorn app.main:app \
   -k uvicorn.workers.UvicornWorker \
   -w ${WEB_CONCURRENCY:-2} \
