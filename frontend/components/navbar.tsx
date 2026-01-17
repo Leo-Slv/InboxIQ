@@ -1,8 +1,6 @@
 'use client'
 import { Button } from "@/components/ui/button";
-import { Logo } from "@/components/logo";
 import { NavMenu } from "@/components/nav-menu";
-import { NavigationSheet } from "@/components/navigation-sheet";
 import { ArrowUpRight, Mail } from "lucide-react";
 
 const Navbar = () => {
@@ -12,7 +10,7 @@ const Navbar = () => {
         <div className="flex items-center gap-8">
           <div className="flex items-center gap-2">
             <Mail className="w-6 h-6 text-primary" />
-            <h1 className="text-lg font-semibold tracking-tight">InboxIQ</h1>
+            <h1 className="font-semibold tracking-tight">InboxIQ</h1>
           </div>
 
           {/* Desktop Menu */}
@@ -33,7 +31,6 @@ const Navbar = () => {
 
           {/* Mobile Menu */}
           <div className="md:hidden">
-            <NavigationSheet />
           </div>
         </div>
       </div>
