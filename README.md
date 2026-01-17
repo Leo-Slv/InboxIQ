@@ -1,126 +1,312 @@
-# 📧 InboxIQ Backend
+# InboxIQ
+
+> Triagem inteligente de emails com classificação automática e respostas sugeridas em tempo real
 
 <div align="center">
 
-**Classificação inteligente de emails com IA e sugestões automáticas de resposta**
+![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)
+![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi)
+![Python](https://img.shields.io/badge/Python-3.13-3776AB?logo=python)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-[![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
-[![OpenAI](https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white)](https://openai.com/)
-[![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org/)
-[![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://docker.com/)
+[Demo](https://inboxiq.vercel.app) · [Documentação API](https://d3sxxc62guaqxd.cloudfront.net/docs)
 
 </div>
 
 ---
 
-## 🎯 Sobre o Projeto
+## 📋 Sobre o Projeto
 
-Backend desenvolvido para o case **AutoU** que automatiza a triagem de alto volume de emails, classificando-os como **Produtivo** ou **Improdutivo** e gerando **sugestões de resposta automática** utilizando GPT da OpenAI.
+O **InboxIQ** é um MVP que demonstra capacidades avançadas de NLP e integração com IA para triagem automatizada de emails. O sistema classifica emails em categorias produtivas/improdutivas e gera respostas contextualizadas prontas para envio.
 
-### Por que InboxIQ?
+### ✨ Principais Recursos
 
-- ⚡ **Reduz esforço manual** da equipe de suporte
-- 🎯 **Prioriza emails importantes** automaticamente
-- 🤖 **Sugestões de resposta** com formatação profissional
-- 📄 **Suporte a múltiplos formatos** (texto, PDF)
-- 🛡️ **Fallback robusto** quando a IA não está disponível
-
----
-
-## ✨ Funcionalidades
-
-| Recurso | Descrição |
-|---------|-----------|
-| 🏷️ **Classificação Inteligente** | Categoriza emails como Produtivo/Improdutivo |
-| ✍️ **Sugestão de Resposta** | Gera texto formatado pronto para envio |
-| 🧹 **Pré-processamento NLP** | Remove stopwords e aplica lematização |
-| 📎 **Upload de Arquivos** | Aceita `.txt` e `.pdf` com extração automática |
-| 🔄 **Sistema de Fallback** | Heurística quando IA falha (quota/timeout) |
-| 🛡️ **Output Guard** | Valida e normaliza respostas da IA |
-| 📊 **API Padronizada** | Envelope consistente em todas as rotas |
-| 📚 **Documentação Automática** | Swagger UI integrado |
+- 🎯 **Classificação Inteligente**: Identifica emails que demandam ação vs. comunicações informativas
+- 🤖 **Respostas Automatizadas**: Gera sugestões de resposta em português brasileiro
+- 📧 **Integração Gmail**: Conecta diretamente com sua conta via OAuth 2.0
+- 📄 **Múltiplos Formatos**: Aceita texto, arquivos .txt e PDFs
+- 🔒 **Segurança**: HTTPS end-to-end com correlação de requisições
+- ⚡ **Performance**: Rate limiting e processamento assíncrono
 
 ---
 
 ## 🏗️ Arquitetura
 
-```
-┌─────────────┐
-│   API       │  ← Endpoints e validação (FastAPI)
-└─────┬───────┘
-      │
-┌─────▼───────┐
-│  Services   │  ← Orquestração do fluxo
-└─────┬───────┘
-      │
-┌─────▼───────────────────────────┐
-│         Providers               │
-├─────────────────────────────────┤
-│ • EmailReader (TXT/PDF)         │
-│ • NlpPreprocess (Lematização)   │
-│ • OpenAiEmailProvider (IA)      │
-│ • HeuristicFallbackProvider     │
-└─────────────────────────────────┘
+```mermaid
+graph LR
+    A[Usuário] --> B[Next.js/Vercel]
+    B --> C[CloudFront HTTPS]
+    C --> D[AWS Elastic Beanstalk]
+    D --> E[FastAPI Container]
+    E --> F[OpenAI API]
+    E --> G[NLP Pipeline]
 ```
 
-### Camadas
+### Stack Tecnológica
 
-- **API (routes)**: Define endpoints REST e valida payload
-- **Services**: Orquestra NLP → IA → Guard → Resposta
-- **Providers**: Componentes especializados (leitura, processamento, IA)
-- **Policies**: `PromptPolicy` centraliza instruções para consistência
-- **Middlewares**: Padronização de erros e tratamento de falhas
+#### Frontend
+- **Next.js 15** (App Router) - Framework React moderno
+- **shadcn/ui** - Componentes reutilizáveis
+- **Tailwind CSS** - Estilização utilitária
+- **Gmail API** - Integração OAuth client-side
+
+#### Backend
+- **FastAPI** - Framework ASGI de alta performance
+- **Gunicorn + Uvicorn** - Servidor ASGI em produção
+- **OpenAI SDK** - Classificação e geração via GPT
+- **pypdf** - Extração de texto de PDFs
+- **simplemma** - Lematização multilíngue
+- **stopwordsiso** - Remoção de stopwords (pt/en)
+
+#### Infraestrutura
+- **Vercel** - Hospedagem frontend
+- **AWS Elastic Beanstalk** - Container Docker do backend
+- **CloudFront** - CDN e terminação SSL/TLS
+- **Docker** - Containerização da aplicação
 
 ---
 
-## 🔌 API Endpoints
+## 🚀 Getting Started
 
-### 📝 Analisar Texto
+### Pré-requisitos
 
+- Node.js 18+
+- Python 3.13+
+- Conta OpenAI (API key)
+- Conta Google Cloud (para integração Gmail)
+
+### Instalação Local
+
+#### Backend
+
+```bash
+cd backend
+
+# Criar ambiente virtual
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# ou: venv\Scripts\activate  # Windows
+
+# Instalar dependências
+pip install -r requirements.txt
+
+# Configurar variáveis de ambiente
+cp .env.example .env
+# Editar .env com suas credenciais
+
+# Executar servidor de desenvolvimento
+uvicorn app.main:app --reload --port 8000
+```
+
+#### Frontend
+
+```bash
+cd frontend
+
+# Instalar dependências
+npm install
+
+# Configurar variáveis de ambiente
+cp .env.local.example .env.local
+# Editar .env.local
+
+# Executar em modo desenvolvimento
+npm run dev
+```
+
+Acesse `http://localhost:3000`
+
+---
+
+## ⚙️ Variáveis de Ambiente
+
+### Backend (.env)
+
+```env
+# OpenAI
+OPENAI_API_KEY=sk-...
+OPENAI_MODEL=gpt-4o-mini
+
+# CORS
+ALLOWED_ORIGINS=http://localhost:3000,https://yourdomain.com
+
+# Server
+PORT=8000
+WEB_CONCURRENCY=4
+
+# Logging
+LOG_LEVEL=INFO
+LOG_JSON=true
+
+# Upload
+EMAIL_MAX_UPLOAD_BYTES=10485760  # 10MB
+EMAIL_UPLOAD_CHUNK_SIZE=1048576  # 1MB
+
+# Gunicorn
+GUNICORN_TIMEOUT=300
+GUNICORN_GRACEFUL_TIMEOUT=30
+GUNICORN_MAX_REQUESTS=1000
+GUNICORN_MAX_REQUESTS_JITTER=100
+```
+
+### Frontend (.env.local)
+
+```env
+NEXT_PUBLIC_API_URL=https://d3sxxc62guaqxd.cloudfront.net
+NEXT_PUBLIC_GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
+```
+
+---
+
+## 📡 API Reference
+
+### Endpoints Principais
+
+#### Health Check
+```http
+GET /health
+```
+
+**Resposta:**
+```json
+{
+  "status": "ok"
+}
+```
+
+#### Análise de Texto
 ```http
 POST /emails/analyze
 Content-Type: application/json
 
 {
-  "text": "Boa tarde, gostaria de saber o status do meu chamado..."
+  "text": "Conteúdo do email aqui..."
 }
 ```
 
-### 📎 Analisar Arquivo
+**Resposta:**
+```json
+{
+  "success": true,
+  "message": "Email analisado com sucesso",
+  "data": {
+    "category": "Produtivo",
+    "suggested_reply": "Assunto: Re: Sua solicitação\n\nOlá,\n\n...",
+    "confidence": 0.92
+  }
+}
+```
 
+#### Análise de Arquivo
 ```http
 POST /emails/analyze-file
 Content-Type: multipart/form-data
 
-file: arquivo.pdf ou arquivo.txt
+file: [arquivo.pdf ou arquivo.txt]
 ```
 
-### 📦 Formato de Resposta
+**Documentação completa:** [Swagger UI](https://d3sxxc62guaqxd.cloudfront.net/docs)
 
-**Sucesso:**
+---
+
+## 🧠 Pipeline de Processamento NLP
+
+O InboxIQ implementa um pipeline sofisticado de processamento de linguagem natural:
+
+```
+1. Normalização de texto
+   ├─ Remoção de espaços extras
+   ├─ Detecção de URLs, emails, números
+   └─ Substituição por tokens especiais
+
+2. Detecção de idioma
+   └─ Heurística baseada em stopwords (pt/en)
+
+3. Tokenização
+   └─ Regex otimizado para separação de palavras
+
+4. Remoção de stopwords
+   └─ Filtros específicos por idioma detectado
+
+5. Lematização
+   ├─ simplemma com fallback cross-language
+   └─ Redução a formas canônicas
+
+6. Extração de keywords
+   └─ Top 25 termos mais relevantes
+
+7. Classificação via OpenAI
+   ├─ Prompt engineering com contexto
+   ├─ Parse estruturado (Pydantic)
+   └─ Output guard para consistência
+```
+
+---
+
+## 🎨 Componentes do Frontend
+
+### Fluxo de Análise
+
+```tsx
+EmailAnalyzer
+├─ InputModeSelector (texto/arquivo/Gmail)
+├─ GmailPickerDialog (seleção de email)
+├─ FileUploader (drag-n-drop)
+├─ AnalyzeButton
+└─ ResponseCard
+    ├─ CategoryBadge
+    ├─ TypingEffect
+    └─ ActionButtons
+        ├─ CopyButton
+        └─ GmailSendDialog
+```
+
+### Principais Bibliotecas UI
+
+- **shadcn/ui**: Componentes acessíveis e customizáveis
+- **Lucide Icons**: Ícones modernos e consistentes
+- **Sonner**: Toast notifications elegantes
+
+---
+
+## 🔒 Segurança e Boas Práticas
+
+### Correlation ID
+Toda requisição recebe um ID único para rastreabilidade:
+```http
+X-Correlation-Id: 550e8400-e29b-41d4-a716-446655440000
+```
+
+### Rate Limiting
+- **15 requisições/minuto** por IP
+- Resposta 429 com envelope padronizado
+
+### Logging Estruturado
+Logs em formato JSON para observabilidade:
 ```json
 {
-  "success": true,
-  "message": "Email analisado com sucesso.",
-  "data": {
-    "category": "Produtivo",
-    "suggested_reply": "Olá...\n\nAtenciosamente,\n[Seu nome]",
-    "confidence": 0.94
-  },
-  "errors": null
+  "ts": "2026-01-17T12:34:56.789Z",
+  "level": "INFO",
+  "correlation_id": "uuid-here",
+  "event": "request_end",
+  "method": "POST",
+  "path": "/emails/analyze",
+  "status_code": 200,
+  "duration_ms": 1234
 }
 ```
 
-**Erro:**
+### Tratamento de Erros
+Todos os erros seguem o mesmo envelope:
 ```json
 {
   "success": false,
-  "message": "Erro de validação.",
-  "data": null,
+  "message": "Erro ao processar requisição",
   "errors": [
     {
       "code": "VALIDATION_ERROR",
-      "message": "Campo obrigatório",
+      "message": "Campo obrigatório ausente",
       "field": "text"
     }
   ]
@@ -129,375 +315,118 @@ file: arquivo.pdf ou arquivo.txt
 
 ---
 
-## 🚀 Começando
+## 🚢 Deploy
 
-### Pré-requisitos
-
-- Python 3.9+
-- Chave de API da OpenAI
-- (Opcional) Docker
-
-### ⚙️ Configuração
-
-1. **Clone o repositório**
-```bash
-git clone <seu-repo>
-cd InboxIQ/backend
-```
-
-2. **Crie o ambiente virtual**
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1  # Windows
-# ou
-source .venv/bin/activate      # Linux/Mac
-```
-
-3. **Instale as dependências**
-```bash
-pip install -r requirements.txt
-```
-
-4. **Configure as variáveis de ambiente**
-
-Crie um arquivo `.env` na raiz do backend:
-
-```env
-# App
-APP_NAME=AutoU InboxIQ API
-APP_VERSION=0.1.0
-
-# CORS (separado por vírgula)
-ALLOWED_ORIGINS=http://localhost:3000,https://seu-front.vercel.app
-
-# OpenAI
-OPENAI_API_KEY=sk-proj-...
-OPENAI_MODEL=gpt-4o-mini
-OPENAI_BASE_URL=
-OPENAI_TIMEOUT=30
-```
-
-> ⚠️ **Importante**: Nunca commite o arquivo `.env` no Git!
-
----
-
-## 💻 Rodando Localmente
-
-### Modo Desenvolvimento
-
-```powershell
-# Windows
-python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-
-# Linux/Mac
-python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-```
-
-Acesse:
-- 🌐 API: http://localhost:8000
-- 📚 Swagger UI: http://localhost:8000/docs
-- 📋 OpenAPI JSON: http://localhost:8000/openapi.json
-
----
-
-## 🐳 Rodando com Docker
-
-### Build da Imagem
+### Backend (AWS Elastic Beanstalk)
 
 ```bash
-cd backend
-docker build -t autou-inboxiq-api .
+# Build da imagem Docker
+docker build -t inboxiq-api .
+
+# Deploy via EB CLI
+eb init -p docker inboxiq-api
+eb create inboxiq-api-prod
+eb deploy
 ```
 
-### Executar Container
+**CloudFront Distribution:**
+- Origin: `inboxiq-api.us-east-2.elasticbeanstalk.com`
+- Protocol: HTTP only (port 80)
+- HTTPS público via domínio CloudFront
+
+### Frontend (Vercel)
 
 ```bash
-docker run --rm -p 8000:8000 --env-file .env autou-inboxiq-api
-```
+# Deploy automático via Git push
+git push origin main
 
-Acesse: http://localhost:8000/docs
-
----
-
-## 🧪 Testando a API
-
-### Com cURL
-
-```bash
-# Análise de texto
-curl -X POST http://localhost:8000/emails/analyze \
-  -H "Content-Type: application/json" \
-  -d '{"text": "Gostaria de saber o status do meu pedido #1234"}'
-
-# Upload de arquivo
-curl -X POST http://localhost:8000/emails/analyze-file \
-  -F "file=@email.pdf"
-```
-
-### Com Postman
-
-1. **POST** `/emails/analyze`
-   - Headers: `Content-Type: application/json`
-   - Body (raw JSON):
-   ```json
-   {
-     "text": "Boa tarde, gostaria de saber o status do meu chamado..."
-   }
-   ```
-
-2. **POST** `/emails/analyze-file`
-   - Body: form-data
-   - Key: `file` (tipo File)
-   - Value: selecione arquivo `.pdf` ou `.txt`
-
----
-
-## 🧠 Pipeline de Processamento NLP
-
-O backend aplica processamento antes de enviar para a IA:
-
-```
-Email Original
-    ↓
-1. Normalização
-    ↓
-2. Tokenização
-    ↓
-3. Remoção de Stopwords (PT/EN)
-    ↓
-4. Lematização (simplemma)
-    ↓
-5. Extração de Keywords
-    ↓
-OpenAI GPT (com prompt otimizado)
-    ↓
-Output Guard (validação)
-    ↓
-Resposta Final
-```
-
-> 💡 O texto original é preservado para manter contexto e formatação natural na resposta
-
----
-
-## 📁 Estrutura do Projeto
-
-```
-backend/
-├── app/
-│   ├── main.py                 # Aplicação FastAPI
-│   ├── routes/                 # Endpoints da API
-│   ├── services/               # Lógica de negócio
-│   ├── providers/              # Componentes especializados
-│   ├── policies/               # Políticas de prompt
-│   └── middlewares/            # Tratamento de erros
-├── .env                        # Variáveis de ambiente (não versionar!)
-├── requirements.txt            # Dependências Python
-├── Dockerfile                  # Container Docker
-└── README.md                   # Você está aqui!
+# Ou via CLI
+vercel --prod
 ```
 
 ---
 
-## 🛡️ Recursos de Robustez
+## 🧪 Testes e Validação
 
-- ✅ **Fallback Heurístico**: Sistema de backup quando IA falha
-- ✅ **Output Guard**: Valida categoria, tamanho e conteúdo
-- ✅ **Timeout Configurável**: Previne travamentos
-- ✅ **Tratamento de Erros**: Respostas padronizadas
-- ✅ **Validação de Input**: Pydantic schemas
-- ✅ **Rate Limiting Ready**: Preparado para limitação de requisições
+### Checklist de Demonstração
+
+- [ ] Health check respondendo
+- [ ] Análise via texto colado
+- [ ] Upload de arquivo .txt
+- [ ] Upload de PDF com texto selecionável
+- [ ] Conexão Gmail OAuth
+- [ ] Seleção e análise de email do Gmail
+- [ ] Envio de resposta via Gmail
+- [ ] Verificação de logs com correlation ID
+- [ ] Teste de rate limiting
+- [ ] Validação de erros padronizados
 
 ---
 
-## 🔍 Observabilidade
+## 📊 Monitoramento
 
-### Logging Estruturado (JSON)
+### Métricas Importantes
 
-Todos os logs são emitidos em **formato JSON** para facilitar indexação e filtragem em ferramentas como AWS CloudWatch, ELK Stack, Datadog, etc.
+- **Latência P95** da API
+- **Taxa de sucesso** das classificações
+- **Confidence score** médio
+- **Rate limit hits**
+- **Erros OpenAI** (quota/timeout)
 
-#### Campos Padronizados
+### Logs no CloudWatch
 
-Cada entrada de log inclui:
-
-| Campo | Descrição | Exemplo |
-|-------|-----------|---------|
-| `ts` | Timestamp UTC | `2026-01-15T14:30:45.123Z` |
-| `level` | Nível do log | `INFO`, `ERROR`, `WARNING` |
-| `logger` | Origem do log | `app.http`, `app.external_ai` |
-| `msg` | Mensagem descritiva | `Request completed successfully` |
-| `event` | Tipo do evento | `request_start`, `openai_rate_limit` |
-| `correlation_id` | ID único da requisição | `550e8400-e29b-41d4-a716-446655440000` |
-
-**Metadados adicionais:** `method`, `path`, `status_code`, `duration_ms`, `client_ip`
-
-#### Exemplo de Log JSON
-
-```json
-{
-  "ts": "2026-01-15T14:30:45.123Z",
-  "level": "INFO",
-  "logger": "app.http",
-  "msg": "Request completed",
-  "event": "request_end",
-  "correlation_id": "550e8400-e29b-41d4-a716-446655440000",
-  "method": "POST",
-  "path": "/emails/analyze",
-  "status_code": 200,
-  "duration_ms": 1250,
-  "client_ip": "192.168.1.100"
-}
+Filtre por correlation ID para debug:
+```
+{ $.correlation_id = "uuid-específico" }
 ```
 
-### 🔗 Correlation ID (X-Correlation-Id)
+---
 
-Cada requisição recebe um **identificador único** para rastreamento ponta a ponta:
+## 🤝 Contribuindo
 
-**Como funciona:**
+Este é um projeto de demonstração técnica (case). Para sugestões ou melhorias:
 
-1. Cliente envia header `X-Correlation-Id` → Backend reutiliza o valor
-2. Sem header → Backend gera UUID automaticamente
-3. Header é retornado na resposta para captura pelo cliente
-
-**Benefícios:**
-
-- 🔎 Rastreie todos os logs de uma requisição específica
-- 🐛 Debugging facilitado em ambientes distribuídos
-- 📊 Correlação entre frontend e backend
-- ⚡ Diagnóstico rápido de erros em produção
-
-**Exemplo de uso:**
-
-```bash
-# Cliente envia correlation ID
-curl -X POST http://localhost:8000/emails/analyze \
-  -H "X-Correlation-Id: meu-id-customizado-123" \
-  -H "Content-Type: application/json" \
-  -d '{"text": "teste"}'
-
-# Response header inclui:
-# X-Correlation-Id: meu-id-customizado-123
-```
-
-### 📝 Logs por Requisição
-
-O middleware registra **dois eventos** por requisição:
-
-#### 1. Request Start
-```json
-{
-  "event": "request_start",
-  "method": "POST",
-  "path": "/emails/analyze",
-  "correlation_id": "abc-123"
-}
-```
-
-#### 2. Request End (com duração)
-```json
-{
-  "event": "request_end",
-  "method": "POST",
-  "path": "/emails/analyze",
-  "status_code": 200,
-  "duration_ms": 1250,
-  "correlation_id": "abc-123"
-}
-```
-
-### ⚠️ Tratamento de Exceções Externas (OpenAI)
-
-O middleware captura e registra erros do provedor de IA com logs consistentes:
-
-**Cenários tratados:**
-
-- 🔑 **Auth Error**: Chave de API inválida
-- 🚫 **Rate Limit/Quota**: Limite de requisições/cota excedida
-- ⏱️ **Timeout**: Requisição demorou demais
-- ❌ **Status Errors**: Erros HTTP diversos
-
-**Exemplo de log de erro:**
-
-```json
-{
-  "ts": "2026-01-15T14:35:12.456Z",
-  "level": "ERROR",
-  "logger": "app.external_ai",
-  "msg": "OpenAI rate limit exceeded",
-  "event": "openai_rate_limit",
-  "correlation_id": "550e8400-e29b-41d4-a716-446655440000",
-  "status_code": 429,
-  "provider_request_id": "req_abc123xyz",
-  "exception": "RateLimitError: Rate limit exceeded...",
-  "traceback": "..."
-}
-```
-
-**Características:**
-
-- ✅ Registra stacktrace completo
-- ✅ Inclui `provider_request_id` quando disponível
-- ✅ Mantém envelope padronizado na resposta
-- ✅ Preserva `correlation_id` para rastreamento
-
-### ⚙️ Configuração de Logging
-
-Adicione ao arquivo `.env`:
-
-```env
-# Logging
-LOG_LEVEL=INFO          # DEBUG, INFO, WARNING, ERROR, CRITICAL
-LOG_JSON=true           # true para JSON estruturado, false para texto
-```
-
-**Níveis recomendados por ambiente:**
-
-| Ambiente | LOG_LEVEL | LOG_JSON |
-|----------|-----------|----------|
-| Desenvolvimento | `DEBUG` | `false` |
-| Homologação | `INFO` | `true` |
-| Produção | `INFO` | `true` |
-
-### 🎯 Benefícios da Observabilidade
-
-| Benefício | Descrição |
-|-----------|-----------|
-| 🔍 **Troubleshooting Rápido** | Filtre logs por `correlation_id` para ver toda a jornada da requisição |
-| 📊 **Métricas de Performance** | Analise `duration_ms` para identificar gargalos |
-| 🚨 **Alertas Proativos** | Configure alertas baseados em `event` e `status_code` |
-| 🔗 **Rastreamento Distribuído** | Propague `correlation_id` entre microserviços |
-| 🛠️ **Suporte Eficiente** | Equipe de suporte pode usar `correlation_id` do erro reportado |
-| 📈 **Análise de Tendências** | Logs estruturados facilitam agregações e dashboards |
-
-### 🔧 Exemplo de Troubleshooting
-
-**Cenário:** Cliente reporta erro no request
-
-1. Cliente fornece `correlation_id` do header de resposta
-2. Filtre logs: `correlation_id == "550e8400-e29b-41d4-a716-446655440000"`
-3. Veja toda a jornada: request_start → processamento → erro → request_end
-4. Identifique stacktrace e contexto completo
-
-**Query exemplo (CloudWatch Insights):**
-
-```sql
-fields @timestamp, level, msg, event, duration_ms
-| filter correlation_id = "550e8400-e29b-41d4-a716-446655440000"
-| sort @timestamp asc
-```
+1. Abra uma issue descrevendo o problema/feature
+2. Fork o repositório
+3. Crie uma branch (`git checkout -b feature/MinhaFeature`)
+4. Commit suas mudanças (`git commit -m 'Add: nova feature'`)
+5. Push para a branch (`git push origin feature/MinhaFeature`)
+6. Abra um Pull Request
 
 ---
 
 ## 📝 Licença
 
-Este projeto foi desenvolvido como case para **AutoU**.
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+---
+
+## 👤 Autor
+
+**AutoU Case - InboxIQ**
+
+Desenvolvido como demonstração de:
+- Arquitetura de microsserviços
+- Integração com APIs de IA
+- Processamento de linguagem natural
+- Deploy em cloud (AWS + Vercel)
+- Boas práticas de engenharia de software
+
+---
+
+## 🙏 Agradecimentos
+
+- OpenAI pela API de classificação e geração
+- Comunidade shadcn/ui pelos componentes
+- FastAPI pela documentação excelente
+- Vercel e AWS pela infraestrutura
 
 ---
 
 <div align="center">
 
-**Desenvolvido com ❤️ usando FastAPI e OpenAI**
+**[⬆ Voltar ao topo](#inboxiq)**
 
-[Documentação](http://localhost:8000/docs) • [Reportar Bug](issues) • [Sugerir Feature](issues)
+Feito com ❤️ e ☕
 
 </div>
