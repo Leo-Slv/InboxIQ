@@ -18,6 +18,17 @@ from app.core.exception_handlers import (
     unhandled_exception_handler,
 )
 
+# ✅ Rate limiter (SlowAPI)
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
+from starlette.requests import Request
+from starlette.responses import JSONResponse
+
+from app.core.response_factory import fail
+from app.domain.models.api_response import ApiError
+
 openapi_tags = [
     {"name": "Health", "description": "Endpoints de verificação de saúde e disponibilidade."},
     {"name": "Emails", "description": (
@@ -26,6 +37,9 @@ openapi_tags = [
         "Suporta envio de texto direto ou arquivo `.txt` / `.pdf`."
     )},
 ]
+
+# ✅ 15 requisições por minuto por IP (global)
+limiter = Limiter(key_func=get_remote_address, default_limits=["15/minute"])
 
 
 def create_app() -> FastAPI:
@@ -48,6 +62,18 @@ def create_app() -> FastAPI:
         license_info={"name": "Proprietary"},
         servers=[{"url": "http://localhost:8000", "description": "Local"}],
     )
+
+    # ✅ SlowAPI middleware + handler
+    app.state.limiter = limiter
+    app.add_middleware(SlowAPIMiddleware)
+
+    @app.exception_handler(RateLimitExceeded)
+    async def ratelimit_handler(request: Request, exc: RateLimitExceeded):
+        payload = fail(
+            message="Muitas requisições. Tente novamente em instantes.",
+            errors=[ApiError(code="RATE_LIMIT", message="Limite de 15 requisições por minuto excedido.")],
+        ).model_dump()
+        return JSONResponse(status_code=429, content=payload)
 
     allowed = [o.strip() for o in settings.allowed_origins.split(",") if o.strip()]
     app.add_middleware(
