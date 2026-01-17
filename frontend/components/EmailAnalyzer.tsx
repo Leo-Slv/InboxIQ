@@ -508,8 +508,9 @@ const EmailAnalyzer: React.FC = () => {
                   className="gap-2"
                 >
                   <Upload className="w-4 h-4" />
-                  Anexar arquivo
+                  <span className="hidden md:inline">Anexar arquivo</span>
                 </Button>
+
 
                 {/* ✅ Botão Gmail ao lado */}
                 <Button
