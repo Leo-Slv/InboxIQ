@@ -25,6 +25,15 @@ export const NavMenu = (props: ComponentProps<typeof NavigationMenu>) => (
               ?.scrollIntoView({ behavior: "smooth", block: "start" });
           }}
         >
+          <div>FAQ</div>
+        </Button>
+        <Button variant="ghost" asChild
+          onClick={() => {
+            document
+              .getElementById("feat")
+              ?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }}
+        >
           <div>Features</div>
         </Button>
       </NavigationMenuItem>
